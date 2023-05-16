@@ -6,31 +6,43 @@
 #include "EditorUtilityLibrary.h"
 #include "EditorAssetLibrary.h"
 
-
-void UQuickAssetActions::DuplicateAssets(int32 NumOfDuplicates, bool AutoSave)
+void UQuickAssetActions::DuplicateAssets(int32 NumOfDuplicates, bool bAutoSave)
 {
     if (NumOfDuplicates <= 0)
     {
-        Print(TEXT("Please enter a valid positive number."), FColor::Red);
+        ShowMsgDialog(EAppMsgType::Ok, TEXT("Please enter a valid positive number."));
+        //Print(TEXT("Please enter a valid positive number."), FColor::Red);
         return;
     }
 
+    // Grab all the Selected Assets Data
     TArray<FAssetData> SelectedAssetsData = UEditorUtilityLibrary::GetSelectedAssetData();
 
     uint32 Counter = 0;
 
+    // Loop through all of our assets
     for (const FAssetData& SelectedAssetData : SelectedAssetsData)
     {
+        // This will return something like:
+        // /Game/MyFolder/BP_NewBlueprint.BP_NewBlueprint
         const FString SourceAssetPath = SelectedAssetData.GetObjectPathString();
 
         for (int32 i = 0; i < NumOfDuplicates; i++)
         {
+            // New Asset name will be: 
+            // BP_NewBlueprint_i
+            // I will be the loop
             const FString NewDuplicatedAssetName = SelectedAssetData.AssetName.ToString() + TEXT("_") + FString::FromInt(i + 1);
+            // Package path will return the following:
+            // /Game/MyFolder/
+            // COBINE will make sure all the "slashes" are added as expected
             const FString NewPathName = FPaths::Combine(SelectedAssetData.PackagePath.ToString(), NewDuplicatedAssetName);
 
+            // If we have successfully duplicated the asset
             if (UEditorAssetLibrary::DuplicateAsset(SourceAssetPath, NewPathName))
             {
-                if (AutoSave)
+                // Do we want to autosave?
+                if (bAutoSave)
                 {
                     UEditorAssetLibrary::SaveAsset(NewPathName, false);
                 }
@@ -41,6 +53,7 @@ void UQuickAssetActions::DuplicateAssets(int32 NumOfDuplicates, bool AutoSave)
 
     if (Counter > 0)
     {
-        Print(TEXT("Successfully duplicated " + FString::FromInt(Counter) + " files"), FColor::Green);
+        ShowNotifyInfo(TEXT("Successfully duplicated " + FString::FromInt(Counter) + " file(s) out of " + FString::FromInt(NumOfDuplicates)));
+        //Print(TEXT("Successfully duplicated " + FString::FromInt(Counter) + " files"), FColor::Green);
     }
 }
