@@ -20,5 +20,6 @@
 			"Type": "Editor",
 			"LoadingPhase": "PreDefault"
 		}
-	]
+	],
+	"Plugins": [ "EditorScriptingUtilities", "Niagara" ]
 }
