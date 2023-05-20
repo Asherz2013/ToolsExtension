@@ -18,7 +18,8 @@
 		{
 			"Name": "ExtraUtilities",
 			"Type": "Editor",
-			"LoadingPhase": "PreDefault"
+			"LoadingPhase": "PreDefault",
+			"AdditionalDependencies": [ "EditorScriptingUtilities", "Niagara" ]
 		}
 	],
 	"Plugins": [ "EditorScriptingUtilities", "Niagara" ]
