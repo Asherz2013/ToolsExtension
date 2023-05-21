@@ -35,6 +35,9 @@ public:
 	UFUNCTION(CallInEditor)
 	void AddPrefixes();
 
+	UFUNCTION(CallInEditor)
+		void DeleteUnusedAssets();
+
 private:
 	// UE Defined prefixes are located here:
 	// https://docs.unrealengine.com/4.27/en-US/ProductionPipelines/AssetNaming/
