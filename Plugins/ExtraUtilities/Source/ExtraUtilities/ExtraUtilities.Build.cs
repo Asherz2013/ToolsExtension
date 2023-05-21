@@ -32,7 +32,8 @@ public class ExtraUtilities : ModuleRules
 				"Slate",
 				"UMG",
 				"Niagara",
-				"UnrealEd"
+				"UnrealEd",
+				"AssetTools"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
