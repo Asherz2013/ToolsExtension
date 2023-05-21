@@ -71,6 +71,7 @@ void UQuickAssetActions::AddPrefixes()
             continue;
         }
 
+        // Check to see if the Prefix is in the TMap
         FString* PrefixFound = PrefixMap.Find(SelectedObject->GetClass());
         if (!PrefixFound || PrefixFound->IsEmpty())
         {
@@ -79,13 +80,15 @@ void UQuickAssetActions::AddPrefixes()
         }
 
         FString OldName = SelectedObject->GetName();
-
         if (OldName.StartsWith(*PrefixFound))
         {
             Print(OldName + TEXT(" already has prefix added"), FColor::Red);
             continue;
         }
 
+        // If we are looking at a Material Instance
+        // If it was created by creating a Child, then it will have "_Inst" on the end
+        // Also double check if it was created from a Material already
         if (SelectedObject->IsA<UMaterialInstanceConstant>())
         {
             OldName.RemoveFromStart(TEXT("M_"));
@@ -93,9 +96,7 @@ void UQuickAssetActions::AddPrefixes()
         }
 
         const FString NewNameWithPrefix = *PrefixFound + OldName;
-
         UEditorUtilityLibrary::RenameAsset(SelectedObject, NewNameWithPrefix);
-
         ++Counter;
     }
 
@@ -115,7 +116,6 @@ void UQuickAssetActions::DeleteUnusedAssets()
     for (const FAssetData& SelectedAssetData : SelectedAssetsData)
     {
         TArray<FString> NumAssetReferences = UEditorAssetLibrary::FindPackageReferencersForAsset(SelectedAssetData.ObjectPath.ToString());
-
         if (NumAssetReferences.Num() == 0)
         {
             UnusedAssetsData.Add(SelectedAssetData);
@@ -128,6 +128,8 @@ void UQuickAssetActions::DeleteUnusedAssets()
         return;
     }
 
+    // Object Tools comes from "UnrealEd module
+    // Brings up a Dialogue box to ask the user if they wish to delete the assets rather than forcing them to be deleted
     const int32 NumOfAssetsDeleted = ObjectTools::DeleteAssets(UnusedAssetsData);
 
     if (NumOfAssetsDeleted == 0) return;
